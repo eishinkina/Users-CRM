@@ -8,16 +8,24 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Age</th>
-              <th>Gender</th>
+              <th>Username</th>
+              <th>City</th>
             </tr>
           </thead>
           <!-- body  -->
           <tbody>
             <tr v-for="user in users" :key="user.id">
-              <td>{{ user.name }}</td>
-              <td>{{ user.age }}</td>
-              <td>{{ user.gender }}</td>
+              <td>
+                <img
+                  src="https://via.placeholder.com/150/92c952"
+                  :alt="user.name"
+                />
+                <span>
+                  {{ user.name }}
+                </span>
+              </td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.address.city }}</td>
             </tr>
           </tbody>
         </table>
@@ -27,7 +35,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -35,22 +43,23 @@ export default {
     };
   },
   created() {
-    this.users = [
-      {
-        id: 1,
-        name: "Jack",
-        age: 22,
-        gender: "male",
-      },
-      {
-        id: 2,
-        name: "Tom",
-        age: 23,
-        gender: "male",
-      },
-    ];
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((response) => {
+        this.users = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+img {
+  width: 60px;
+  height: auto;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+</style>
