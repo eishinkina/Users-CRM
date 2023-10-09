@@ -7,14 +7,14 @@
           <!-- head  -->
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>City</th>
+              <th @click="sort('name')">Name</th>
+              <th @click="sort('username')">Username</th>
+              <th @click="sort('city')">City</th>
             </tr>
           </thead>
           <!-- body  -->
           <tbody>
-            <tr v-for="user in users" :key="user.id">
+            <tr v-for="user in sortedUsers" :key="user.id">
               <td>
                 <img
                   src="https://via.placeholder.com/150/92c952"
@@ -29,6 +29,7 @@
             </tr>
           </tbody>
         </table>
+        <p>debug: sort: {{ currentSort }}, dir: {{ currentSortDir }}</p>
       </div>
     </section>
   </div>
@@ -40,6 +41,8 @@ export default {
   data() {
     return {
       users: [],
+      currentSort: "name",
+      currentSortDir: "asc",
     };
   },
   created() {
@@ -52,6 +55,33 @@ export default {
         console.log(error);
       });
   },
+  computed: {
+    sortedUsers() {
+      return [...this.users].sort((a, b) => {
+        let aValue = a[this.currentSort];
+        let bValue = b[this.currentSort];
+
+        if (this.currentSort === 'city') {
+          aValue = a.address[this.currentSort];
+          bValue = b.address[this.currentSort];
+        }
+
+        let mod = 1;
+        if (this.currentSortDir === 'desc') mod = -1;
+        if (aValue < bValue) return -1 * mod;
+        if (aValue > bValue) return 1 * mod;
+        return 0;
+      });
+    }
+  },
+  methods: {
+    sort(e) {
+      if (e === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+      }
+      this.currentSort = e;
+    }
+  }
 };
 </script>
 
